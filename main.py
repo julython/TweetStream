@@ -1,11 +1,20 @@
 import tweetstream
 import requests
 import os
-import json
-import pprint
+import hmac
+import hashlib
+import calendar
+from datetime import datetime
 
 API_KEY = os.environ.get("API_KEY")
 API_URL = 'http://www.julython.org/api/v1/commits'
+
+def make_digest(message):
+    """Somewhat secure way to encode the username for tweets by the client."""
+    salt = calendar.timegm(datetime.now().utctimetuple())
+    key = ':'.join([salt, API_KEY])
+    m = hmac.new(key, message, hashlib.sha256).hexdigest()
+    return ':'.join([salt, m])
 
 def callback(message):
     # this will be called every message
@@ -16,7 +25,7 @@ def callback(message):
     print "%s says: %s" % (screen_name, text)
 
 stream = tweetstream.TweetStream()
-stream.fetch("/1/statuses/filter.json?track=python", callback=callback)
+stream.fetch("/1/statuses/filter.json?track=julython", callback=callback)
 
 # if you aren't on a running ioloop...
 from tornado.ioloop import IOLoop
