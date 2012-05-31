@@ -6,7 +6,7 @@ import hashlib
 import time
 
 API_KEY = os.environ.get("API_KEY")
-API_URL = 'http://www.julython.org/api/v1/commits'
+API_URL = os.environ.get("API_URL", 'http://www.julython.org/api/v1/commits')
 
 def make_digest(message):
     """Somewhat secure way to encode the username for tweets by the client."""
@@ -21,7 +21,9 @@ def callback(message):
     user = message.get('user')
     screen_name = user.get('screen_name')
     
-    print "%s says: %s" % (screen_name, text)
+    #print "%s says: %s" % (screen_name, text)
+    message['api_key'] = make_digest(screen_name)
+    requests.post(API_URL, message)
 
 stream = tweetstream.TweetStream()
 stream.fetch("/1/statuses/filter.json?track=julython", callback=callback)
