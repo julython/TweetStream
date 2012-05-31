@@ -3,15 +3,14 @@ import requests
 import os
 import hmac
 import hashlib
-import calendar
-from datetime import datetime
+import time
 
 API_KEY = os.environ.get("API_KEY")
 API_URL = 'http://www.julython.org/api/v1/commits'
 
 def make_digest(message):
     """Somewhat secure way to encode the username for tweets by the client."""
-    salt = calendar.timegm(datetime.now().utctimetuple())
+    salt = int(time.time())
     key = ':'.join([salt, API_KEY])
     m = hmac.new(key, message, hashlib.sha256).hexdigest()
     return ':'.join([salt, m])
