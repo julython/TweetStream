@@ -33,9 +33,10 @@ import socket
 import time
 import base64
 import urlparse
+import os
 
-TWITTER_APP_USER = "SET_IN_SETTINGS"
-TWITTER_APP_PASSWORD = "SET_IN_SETTINGS"
+TWITTER_APP_USER = os.environ.get("TWITTER_APP_USER")
+TWITTER_APP_PASSWORD = os.environ.get("TWITTER_APP_PASSWORD")
 TWITTER_STREAM_HOST = "stream.twitter.com"
 TWITTER_STREAM_PORT = 443
 TWITTER_STREAM_SCHEME = "https"
