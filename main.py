@@ -10,7 +10,7 @@ API_URL = os.environ.get("API_URL", 'http://www.julython.org/api/v1/commits')
 
 def make_digest(message):
     """Somewhat secure way to encode the username for tweets by the client."""
-    salt = int(time.time())
+    salt = str(int(time.time()))
     key = ':'.join([salt, API_KEY])
     m = hmac.new(key, message, hashlib.sha256).hexdigest()
     return ':'.join([salt, m])
