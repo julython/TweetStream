@@ -37,6 +37,8 @@ def callback(message):
     user = message.get('user')
     screen_name = user.get('screen_name')
     tid = message.get('id')
+    # Create an Authorization Header to look like we are the user
+    # to the backend api
     key = make_digest(screen_name)
     
     # parse any urls for repositories create 
@@ -45,8 +47,7 @@ def callback(message):
         parse_url(url, screen_name, text, hashtags, tid, key)
 
     # send the message over
-    message['api_key'] = key
-    requests.post(API_URL + 'commits', message)
+    requests.post(API_URL + 'commits', message, headers={'Authorization': key})
 
 def parse_url(url, screen_name, text, hashtags, tid, key):
     """
@@ -79,9 +80,8 @@ def _create_project(expanded, screen_name, text, hashtags, tid, key):
         'expanded_url': expanded,
         'screen_name': screen_name,
         'text': text,
-        'api_key': key,
     }
-    response = requests.post(API_URL + 'projects', message)
+    response = requests.post(API_URL + 'projects', message, headers={'Authorization': key})
     if response.status_code == 201:
         # We have created a new project, tweet back the user
         msg = json.loads(response.text)
