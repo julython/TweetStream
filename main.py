@@ -21,7 +21,7 @@ def make_digest(message):
     salt = str(int(time.time()))
     key = ':'.join([salt, API_KEY])
     m = hmac.new(key, message, hashlib.sha256).hexdigest()
-    return ':'.join([salt, m])
+    return ':'.join([salt, message, m])
 
 def callback(message):
     """
